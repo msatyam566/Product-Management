@@ -76,6 +76,8 @@ const createCart = async (req, res) => {
             return res.status(201).send({status:true, message:"cart created successfully", data:saveCart})
         }
 
+        // updating price when products get added or removed //
+
         if(isOldUser){
             const newTotalPrice = (isOldUser.totalPrice) + ((findProduct.price)*quantity)
             let flag = 0;
