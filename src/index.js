@@ -6,12 +6,12 @@ const multer = require('multer')
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(multer().any())
 app.use('/', route);
 
-mongoose.connect("mongodb://127.0.0.1:27017/group9Database", {useNewUrlParser: true})
-.then(() => console.log('Successfully connected to mongoDB 27017'))
+mongoose.connect("mongodb+srv://msatyam566:5RKuruCHR4gM2ZDi@cluster0.dqzcc.mongodb.net/groupdatabase09?retryWrites=true&w=majority", {useNewUrlParser: true})
+.then(() => console.log('MongoDB is connected'))
 .catch(err => console.log('Connection error'))
 
 app.listen(process.env.PORT || 3000, function() {
