@@ -8,12 +8,18 @@ const isValidValue = (value) => {
     return true;
 };
 
-const isValidDetails = (requestBody) => Object.keys(requestBody).length > 0;
+let isValidPincode = function (value) {
+    if (!isNaN(value) && value.toString().length == 6) return true
+};
 
-const isValidSize = (input) => ["S", "XS", "M", "X", "L", "XXL", "XL"].indexOf(input) !== -1 
+let validateChar = function(value){
+    return /^[A-Za-z\s]+$/.test(value)
+};
+
+const isValidDetails = (requestBody) => Object.keys(requestBody).length > 0;
 
 const isValidStatus = (input) => ["cancelled", "completed", "pending"].indexOf(input) !== -1
 
 const isValidObjectId = (objectId) => mongoose.Types.ObjectId.isValid(objectId)
 
-module.exports = { isValidValue, isValidDetails, isValidSize, isValidObjectId,isValidStatus }
+module.exports = { isValidValue, isValidDetails, validateChar, isValidPincode, isValidObjectId, isValidStatus }
