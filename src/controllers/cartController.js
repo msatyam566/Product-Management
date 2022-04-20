@@ -76,8 +76,6 @@ const createCart = async (req, res) => {
             return res.status(201).send({status:true, message:"cart created successfully", data:saveCart})
         }
 
-        // updating price when products get added or removed //
-
         if(isOldUser){
             const newTotalPrice = (isOldUser.totalPrice) + ((findProduct.price)*quantity)
             let flag = 0;
@@ -91,7 +89,7 @@ const createCart = async (req, res) => {
                         totalPrice : newTotalPrice,
                         quantity : items[i].quantity
                     }
-                    flag = 1;
+                    flag = 1
                     const saveData = await cartModel.findOneAndUpdate(
                         {userId : userIdFromParams},
                         newCartData, {new:true})
@@ -168,7 +166,7 @@ const updateCart = async (req, res) => {
 
         if (!validator.isValidObjectId(cartId)) {
             return res.status(400).send({ status: false, msg: "cartId is invalid" });
-        }
+        } 
 
         const findCart = await cartModel.findById(cartId);
     
@@ -335,4 +333,5 @@ const deleteCart = async (req, res) => {
 }
 
 module.exports = { createCart, updateCart, deleteCart, getCartDetails }
+
 
