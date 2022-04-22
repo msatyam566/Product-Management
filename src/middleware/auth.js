@@ -13,7 +13,7 @@ const userAuth = async (req, res, next) => {
         });
     }
 
-    let validToken = token.split(' ')
+    let validToken = token.split(' ')  
 
     const decodeToken = jwt.verify(validToken[1], "group9")
     

@@ -51,12 +51,14 @@ const createOrder = async (req, res) => {
             }
         }
 
+        //==========product quantity will add in cart======//
+
         let totalQuantityInCart = 0 
         for(let i=0; i<findUserCart.items.length; i++){
             totalQuantityInCart += findUserCart.items[i].quantity
         }
 
-        const newOrder = {
+        const newOrder = { 
             userId : userIdFromParams,
             items : findUserCart.items,
             totalPrice : findUserCart.totalPrice,

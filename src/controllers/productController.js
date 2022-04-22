@@ -188,7 +188,7 @@ const updateProduct = async function (req,res){
         let { title, description, price, currencyId,
             productImage, style, isFreeShipping, availableSizes, installments } = req.body
 
-        const dataToUpdate = {}
+        const dataToUpdate = {}   // creating an empty object//
 
 
             if(validator.isValidValue(title)){

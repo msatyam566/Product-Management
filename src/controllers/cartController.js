@@ -3,7 +3,7 @@ const productModel = require('../models/productModel')
 const userModel = require('../models/userModel')
 const validator = require('../validations/validator')
 
-//------------------------------- create cart ----------------------------------------------------------------------
+//------------------------------- create cart ----------------------------------------------------------------------//
 
 const createCart = async (req, res) => {
     try{
@@ -11,6 +11,8 @@ const createCart = async (req, res) => {
         const userIdFromToken = req.userId
         const data = req.body
         const {productId, quantity} = data
+
+        //================Validations start=================//
 
         if (!validator.isValidObjectId(userIdFromParams)) {
             return res.status(400).send({ status: false, msg: "userId is invalid" });
@@ -59,7 +61,11 @@ const createCart = async (req, res) => {
             return res.status(400).send({status:false, message: 'quantity can not be less than zero' })    //price should be valid number
         }
 
+        //========================validations end===========================//
+
         const isOldUser = await cartModel.findOne({userId : userIdFromParams});
+
+        //===================Newcart=================================//
 
         if(!isOldUser){
             const newCart = {
@@ -75,6 +81,7 @@ const createCart = async (req, res) => {
             const saveCart = await cartModel.create(newCart)
             return res.status(201).send({status:true, message:"cart created successfully", data:saveCart})
         }
+        //=============already added products in cart==============//
 
         if(isOldUser){
             const newTotalPrice = (isOldUser.totalPrice) + ((findProduct.price)*quantity)
@@ -82,7 +89,7 @@ const createCart = async (req, res) => {
             const items = isOldUser.items
             for(let i=0; i<items.length; i++){
                 if(items[i].productId.toString() === productId){
-                    console.log("productIds are similar")  // quantity add
+                    console.log("productIds are similar")  //============ quantity add in existing cart==========//
                     items[i].quantity += quantity
                     var newCartData = {
                         items : items,
@@ -97,6 +104,8 @@ const createCart = async (req, res) => {
                         message:"product added to the cart successfully", data:saveData})
                 }
             }
+            //===============if user added new product in cart =======================//
+
             if (flag === 0){
                 console.log("productIds are not similar")
                 let addItems = {
@@ -125,6 +134,8 @@ const updateCart = async (req, res) => {
         const data = req.body
         const {productId, cartId, removeProduct} = data
 
+        //==============validations start==============================//
+
         if (!validator.isValidObjectId(userIdFromParams)) {
             return res.status(400).send({ status: false, msg: "userId is invalid" });
         }
@@ -134,6 +145,8 @@ const updateCart = async (req, res) => {
         if (!userByuserId) {
             return res.status(404).send({ status: false, message: 'user not found.' });
         }
+
+        //================authorization===============================//
         
         if (userIdFromToken != userIdFromParams) {
             return res.status(403).send({
@@ -192,6 +205,8 @@ const updateCart = async (req, res) => {
             return res.status(400).send({ status: false, message: 'removeProduct should be 0 or 1' })
         }
         let findQuantity = findCart.items.find(x => x.productId.toString() === productId)
+
+        //==============if user remove all products==========================//
         
         if (removeProduct == 0) {
             let totalAmount = findCart.totalPrice - (findProduct.price * findQuantity.quantity)
@@ -204,6 +219,7 @@ const updateCart = async (req, res) => {
             return res.status(200).send({ status: true,
                 message: 'the product has been removed from the cart', data: newCart })
         }
+        //===================if user remove one product==============================//
 
         if(removeProduct == 1){
             console.log("coming in")
@@ -239,7 +255,7 @@ const updateCart = async (req, res) => {
         return res.status(500).json({ status: false, message: error.message });
     }
 }
-//--------------------------------------- get cart details ------------------------------------------------------------
+//--------------------------------------- get cart details ------------------------------------------------------------//
 
 const getCartDetails = async (req, res) => {
     try{
@@ -255,6 +271,8 @@ const getCartDetails = async (req, res) => {
         if (!userByuserId) {
             return res.status(404).send({ status: false, message: 'user not found.' });
         }
+
+        //=============authorization ===============================//
 
         if (userIdFromToken != userIdFromParams) {
             return res.status(403).send({
@@ -313,6 +331,7 @@ const deleteCart = async (req, res) => {
         if(findCart.totalPrice === 0){
             return res.status(404).send({status:false, msg:"your cart is empty."})
         }
+        //===========number of items in cart will zero===================//
 
         await cartModel.findOneAndUpdate(
             { userId: userIdFromParams },
